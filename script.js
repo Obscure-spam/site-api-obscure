@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const backendUrl = 'https://site-api-obscure-2.onrender.com'; // URL correto do Web Service no Render
+    const backendUrl = 'https://site-api-obscure-z68c.onrender.com'; // Novo URL do Web Service
 
     const authForm = document.getElementById('authForm');
     if (authForm) {
@@ -63,9 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(`Request failed with status ${res.status}: ${text.slice(0, 100)}`);
                 }
                 const data = await res.json();
-                document.getElementById('result').innerHTML = res.ok
-                    ? `<p>App criado: <a href="${data.url}">${data.url}</a></p>`
-                    : `<p>Erro: ${data.error}</p>`;
+                document.getElementById('result').innerHTML = `<p>App criado: <a href="${data.url}">${data.url}</a></p>`;
             } catch (err) {
                 document.getElementById('result').innerHTML = `<p>Erro: ${err.message}. Verifique se o backend está rodando em ${backendUrl}.</p>`;
             }
