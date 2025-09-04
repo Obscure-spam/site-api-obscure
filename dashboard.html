@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Obscure Hosting</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Dashboard Obscure</h1>
+        <button id="logoutBtn">Logout</button>
+    </header>
+    <section id="createApp">
+        <h2>Criar Novo App</h2>
+        <form id="appForm">
+            <input type="text" id="appName" placeholder="Nome do App" required>
+            <input type="text" id="repoUrl" placeholder="URL do Repositório GitHub" required>
+            <button type="submit">Criar</button>
+        </form>
+        <div id="result"></div>
+    </section>
+    <a href="planos.html">Upgrade Plano</a>
+    <script src="script.js"></script>
+</body>
+</html>
