@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const backendUrl = 'https://site-api-obscure-2.onrender.com'; // URL correto do Web Service no Render
+
     const authForm = document.getElementById('authForm');
     if (authForm) {
         authForm.addEventListener('submit', async (e) => {
@@ -6,39 +8,39 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             try {
-                const res = await fetch('https://your-backend.onrender.com/login', {
+                const res = await fetch(`${backendUrl}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
-                const data = await res.json();
-                if (res.ok) {
-                    localStorage.setItem('token', data.token);
-                    window.location.href = 'dashboard.html';
-                } else {
-                    alert(data.error);
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(`Request failed with status ${res.status}: ${text.slice(0, 100)}`);
                 }
+                const data = await res.json();
+                localStorage.setItem('token', data.token);
+                window.location.href = 'dashboard.html';
             } catch (err) {
-                alert('Erro: ' + err.message);
+                alert(`Erro ao fazer login: ${err.message}. Verifique se o backend está rodando em ${backendUrl}.`);
             }
         });
         document.getElementById('registerBtn').addEventListener('click', async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             try {
-                const res = await fetch('https://your-backend.onrender.com/register', {
+                const res = await fetch(`${backendUrl}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password, plano: 'free' })
                 });
-                const data = await res.json();
-                if (res.ok) {
-                    alert('Registrado! Faça login.');
-                } else {
-                    alert(data.error);
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(`Request failed with status ${res.status}: ${text.slice(0, 100)}`);
                 }
+                const data = await res.json();
+                alert('Registrado! Faça login.');
             } catch (err) {
-                alert('Erro: ' + err.message);
+                alert(`Erro ao registrar: ${err.message}. Verifique se o backend está rodando em ${backendUrl}.`);
             }
         });
     }
@@ -51,17 +53,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const repoUrl = document.getElementById('repoUrl').value;
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch('https://your-backend.onrender.com/create-app', {
+                const res = await fetch(`${backendUrl}/create-app`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                     body: JSON.stringify({ appName, repoUrl })
                 });
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(`Request failed with status ${res.status}: ${text.slice(0, 100)}`);
+                }
                 const data = await res.json();
                 document.getElementById('result').innerHTML = res.ok
                     ? `<p>App criado: <a href="${data.url}">${data.url}</a></p>`
                     : `<p>Erro: ${data.error}</p>`;
             } catch (err) {
-                document.getElementById('result').innerHTML = `<p>Erro: ${err.message}</p>`;
+                document.getElementById('result').innerHTML = `<p>Erro: ${err.message}. Verifique se o backend está rodando em ${backendUrl}.</p>`;
             }
         });
     }
@@ -77,15 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
     window.upgrade = async (plano) => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('https://your-backend.onrender.com/create-checkout-session', {
+            const res = await fetch(`${backendUrl}/create-checkout-session`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ plano })
             });
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Request failed with status ${res.status}: ${text.slice(0, 100)}`);
+            }
             const data = await res.json();
             window.location.href = data.url;
         } catch (err) {
-            alert('Erro: ' + err.message);
+            alert(`Erro ao fazer upgrade: ${err.message}. Verifique se o backend está rodando em ${backendUrl}.`);
         }
     };
 });
