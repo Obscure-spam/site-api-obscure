@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos - Obscure Hosting</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Planos Obscure Hosting</h1>
+    </header>
+    <section class="planos-grid">
+        <div class="plano">
+            <h2>Gratuito</h2>
+            <p>5 apps</p>
+            <p>512MB RAM/app</p>
+            <p>1GB storage</p>
+            <p>R$0/mês</p>
+            <button onclick="upgrade('free')">Escolher</button>
+        </div>
+        <div class="plano">
+            <h2>Básico</h2>
+            <p>10 apps</p>
+            <p>1GB RAM/app</p>
+            <p>5GB storage</p>
+            <p>R$20/mês</p>
+            <button onclick="upgrade('basico')">Escolher</button>
+        </div>
+        <div class="plano">
+            <h2>Pro</h2>
+            <p>20 apps</p>
+            <p>2GB RAM/app</p>
+            <p>10GB storage</p>
+            <p>R$40/mês</p>
+            <button onclick="upgrade('pro')">Escolher</button>
+        </div>
+    </section>
+    <a href="index.html">Voltar</a>
+    <script src="script.js"></script>
+</body>
+</html>
