@@ -7,14 +7,13 @@ const cors = require('cors');
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: '*' })); // Permite todas as origens para testes; ajuste para produção
+app.use(cors({ origin: 'https://site-api-obscure-frontend.onrender.com' })); // URL do Static Site
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-// Middleware de autenticação
 const authenticate = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: 'Token requerido' });
@@ -26,7 +25,6 @@ const authenticate = (req, res, next) => {
     }
 };
 
-// Rota de registro
 app.post('/register', async (req, res) => {
     const { email, password, plano } = req.body;
     const hashed = await bcrypt.hash(password, 10);
@@ -42,7 +40,6 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// Rota de login
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
@@ -54,7 +51,6 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Rota para criar app
 app.post('/create-app', authenticate, async (req, res) => {
     const { appName, repoUrl } = req.body;
     const userApps = await pool.query('SELECT COUNT(*) FROM apps WHERE user_id = $1', [req.user.id]);
@@ -71,7 +67,6 @@ app.post('/create-app', authenticate, async (req, res) => {
     }
 });
 
-// Rota para checkout Stripe
 app.post('/create-checkout-session', authenticate, async (req, res) => {
     const { plano } = req.body;
     const price = plano === 'basico' ? 2000 : 4000;
@@ -80,8 +75,8 @@ app.post('/create-checkout-session', authenticate, async (req, res) => {
             payment_method_types: ['card'],
             line_items: [{ price_data: { currency: 'brl', product_data: { name: plano }, unit_amount: price }, quantity: 1 }],
             mode: 'subscription',
-            success_url: 'https://your-frontend.onrender.com/success.html', // Ajuste para o URL do frontend
-            cancel_url: 'https://your-frontend.onrender.com/cancel.html', // Ajuste para o URL do frontend
+            success_url: 'https://site-api-obscure-frontend.onrender.com/success.html', // URL do Static Site
+            cancel_url: 'https://site-api-obscure-frontend.onrender.com/cancel.html', // URL do Static Site
             metadata: { userId: req.user.id, plano }
         });
         res.json({ url: session.url });
@@ -90,7 +85,6 @@ app.post('/create-checkout-session', authenticate, async (req, res) => {
     }
 });
 
-// Webhook Stripe
 app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
     const sig = req.headers['stripe-signature'];
     try {
